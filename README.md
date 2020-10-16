@@ -16,7 +16,7 @@ For MOT17/MOT20 the detection are already provided. Own detection methods can be
 We propose greedy (sub-optimal) and Munkres (optimal) association algorithms. Both versions are enhanced with unassociated detection caching. Re-identification method based on track mutual projection can be optionally turned on to reduce track fragmentation. [See details below](#tracking)
   
 **4. Pose estimation** *(in each image)*  
-We used HRNET \[6\] for pose estimation on the detected bounding boxes obtained in Step 1. Other pose estimation methods can be used.  
+We used HRNET \[6\] for pose estimation (16 2D joints in each pose) on the detected bounding boxes obtained in Step 1.
   
 **5. Entitative relationship detection** *(in set of tracks)*  
 Computation of hand distance and body proportion features is used to detect pairs holding hands and children in the video. [See details below](#rel_det).
@@ -100,17 +100,30 @@ Following Python libraries are used:
 ```
 
 ### Input format
-Entitative relationships are detected in tracks obtained by the tracker. The input data have the following format (i.e., one tracked bounding box per line):
+Entitative relationships are detected in tracks obtained by the tracker. The input data have the following format (i.e., one tracked bounding box per line followed by hashtag and joint coordinates):
 ```
-    frame_number,subject_id,bbox_top_left_corner_x,bbox_top_left_corner_y,bbox_width,bbox_height
+    frame_number,subject_id,bbox_top_left_corner_x,bbox_top_left_corner_y,bbox_width,bbox_height#j1oint_x, joint1_y, ...., joint16_x, joint16_y
     ...
 ```
 
 ### Running the detection
-### Results
+1. First, load the track data (make sure, they conform with the above format):
+```
+tracks, by_ID = load_data("track_file.txt")
+```
+2. Run the detector
+```
+    result = search_child(tracks, by_ID, lim_len, k) # detect children
+    result = search_hands(tracks, by_ID, lim_len, k)  # detect couples
+```
+where `lim_len` denotes the minimal lenght required from the result (i.e., both tracks in the result need to have at least this length), and `k` number of results to be retrieved.
+
 
 ## Reference
 For referencing this work please use the following citation:
+> Tracking subjects and detecting relationships in crowded videos 
+*Petr ELIAS, Matus MACKO, Jan SEDMIDUBSKY, Pavel ZEZULA*
+BIB info will be added
 
 ## Bibliography
 \[1\] Bewley, A., Ge, Z., Ott, L., Ramos, F.T., Upcroft, B.: Simple online and realtime tracking. In: 2016 IEEE In-ternational Conference on Image Processing, ICIP 2016, Phoenix, AZ, USA, September  25-28, 2016, pp. 3464–3468. IEEE (2016)  
