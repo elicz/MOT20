@@ -22,7 +22,7 @@ We used hrnet for pose estimation on the detected areas obtained in Step 1. Othe
 Computation of hand distance and body proportion features is used to detect pairs holding hands and children in the video. [See details below](#rel_det).
 
 ## <a name="tracking"></a>Tracking
-Two simple and generic tracking algorithms can be used for bounding box association: Munkres or greedy variant. On MOT17 they have similar performance in terms of accuracy and efficiency. Both methods are enhanced with unassociated detection caching for (default) durationg of `cache=7` frames. Set `cache=0` for NO caching, or adjust accordingly. All [tracking parameters are specified below](track_params) in more detail.
+Two generic tracking algorithms are used for bounding box association in consecutive frames: i) optimal Munkres and 2) Sub-optimal Greedy variant. On MOT17 they have similar performance in terms of accuracy and efficiency. Both methods are enhanced with unassociated detection caching for (default) duration of `cache=7` frames. Set `cache=0` for NO caching, or adjust accordingly. All [tracking parameters](track_params) are specified below in more detail.
 > Tracking methods are implemented in *multi-object-tracker.py*
 
 ### Dependencies
@@ -34,7 +34,7 @@ Following Python libraries are used:
 ```
 
 ### Input format
-The `get_hypotheses(file_with_detections)` should have the following format, i.e., each detection \[frame_nr,x,y,w,h\] on a seperate line:
+The `get_hypotheses("file_with_detections.txt")` takes detection file in the following format (i.e., each detection \[frame_nr,x,y,w,h\] on a seperate line):
 ```
     d1_bbox_frame_number,d1_bbox_top_left_corner_x,d1_bbox_top_left_corner_y,d1_bbox_width,d1_bbox_height
     d2_bbox_frame_number,d2_bbox_top_left_corner_x,d2_bbox_top_left_corner_y,d2_bbox_width,d2_bbox_height
@@ -65,7 +65,7 @@ SIZE_LIMIT = 3            # Minimum number of frames required to constitute a tr
 INTERPOLATE = True        # Interpolate poses in re-identified tracks, default=True
 MIN_LENGTH_TO_MATCH = 3   # Minimum length of track required for matching fragmented tracks, default=3
 MATCH_FRAMES = 2          # Exact number of frames to be projected for matching fragmented tracks, default=2 (event. 3) 
-MATCH_BASIS = 30    #   If fragmented track has more frames than MIN_LENGTH_TO_MATCH, maximum number of frames to take into account when projecting (minimum of (length,match_basis is taken), default=30
+MATCH_BASIS = 30      #If fragmented track has more frames than MIN_LENGTH_TO_MATCH, maximum number of frames to take into account when projecting (minimum of (length,match_basis is taken), default=30
 MATCH_MAX_FRAME_GAP = 50  # Max allowed gap between to-be-matched fragmented tracklets, default=50 
 REQUIRED_MATCH_SCORE = 0.3# Min IOU score to match two fragmented tracks based on MATCH_FRAMES X MATCH_FRAMES sum of IOU, default=0.25 
 ```
