@@ -7,22 +7,22 @@ Multi-subject tracking in crowded videos is a challenging research direction wit
 ## Pipeline
 ![Flowchart](/supplementary/flowchart.png "Tracking ad detection flowchart")
 **1. Video containing subjects**  
-We used the videos from [MOT17](https://motchallenge.net/data/MOT17)\[3\] and [MOT20](https://motchallenge.net/data/MOT20)\[4\] datasets, but any video(s) containing people (even crowded video) would be good.  
+We used the videos from [MOT17](https://motchallenge.net/data/MOT17)\[3\] and [MOT20](https://motchallenge.net/data/MOT20)\[4\] datasets. However, any video(s) containing people (even crowded video) would be just fine.  
   
 **2. Object detection** *(in each image)*  
-For MOT17/MOT20 the detection are already provided. Own detection methods can be used (e.g., YOLO\[5\]).  
+For MOT17/MOT20 the detection are already provided. Own detection methods can be used by other detectors (e.g., YOLO\[5\]).  
   
 **3. Tracking** *(in each image sequence)*   
 We propose greedy (sub-optimal) and Munkres (optimal) association algorithms. Both versions are enhanced with unassociated detection caching. Re-identification method based on track mutual projection can be optionally turned on to reduce track fragmentation. [See details below](#tracking)
   
 **4. Pose estimation** *(in each image)*  
-We used hrnet for pose estimation on the detected areas obtained in Step 1. Other methods can be used.  
+We used HRNET\[6\] for pose estimation on the detected bounding boxes obtained in Step 1. Other pose estimation methods can be used.  
   
 **5. Entitative relationship detection** *(in set of tracks)*  
 Computation of hand distance and body proportion features is used to detect pairs holding hands and children in the video. [See details below](#rel_det).
 
 ## <a name="tracking"></a>Tracking
-Two generic tracking algorithms are used for bounding box association in consecutive frames: i) optimal Munkres and 2) Sub-optimal Greedy variant. On MOT17 they have similar performance in terms of accuracy and efficiency. Both methods are enhanced with unassociated detection caching for (default) duration of `cache=7` frames. Set `cache=0` for NO caching, or adjust accordingly. All [tracking parameters](track_params) are specified below in more detail.
+Two generic tracking algorithms are used for bounding box association in consecutive frames: i) optimal Munkres and 2) Sub-optimal Greedy variant. On MOT17 they have similar performance in terms of accuracy and efficiency.
 > Tracking methods are implemented in *multi-object-tracker.py*
 
 ### Dependencies
@@ -34,7 +34,7 @@ Following Python libraries are used:
 ```
 
 ### Input format
-The `get_hypotheses("file_with_detections.txt")` takes detection file in the following format (i.e., each detection \[frame_nr,x,y,w,h\] on a seperate line):
+The `get_hypotheses("file_with_detections.txt")` takes detection file in the following format (i.e., each detection *frame_nr,x,y,w,h* on a seperate line):
 ```
     d1_bbox_frame_number,d1_bbox_top_left_corner_x,d1_bbox_top_left_corner_y,d1_bbox_width,d1_bbox_height
     d2_bbox_frame_number,d2_bbox_top_left_corner_x,d2_bbox_top_left_corner_y,d2_bbox_width,d2_bbox_height
@@ -52,11 +52,13 @@ or
 ```
     tracks = track_greedy(H, iou_tracking, size_limit, cache) ## sub-otpimal greedy variant (slightly faster, similar results)
 ```
+Both methods are by default enhanced with unassociated detection caching for duration of `cache=7` frames. Set `cache=0` for NO caching, or adjust accordingly. All [tracking parameters](track_params) are specified below in more detail.
 
 #### Re-Identification
+todo
 
 #### <a name="track_params"></a>Tracking parameters
-Also, you can adjust the tracking parameters:
+Following tracking parameters are used to tune the tracker:
 ```
 # 3. TRACKING PARAMETERS
 #========================
@@ -95,3 +97,5 @@ For referencing this work please use the following citation:
 \[2\] Bochinski, E., Eiselein,  V., Sikora, T.: High-speed tracking-by-detection without using image information. In: 14th IEEE International Conference on Advanced Video and Signal Based Surveillance, AVSS 2017, Lecce, Italy, August 29 - September 1, 2017, pp. 1–6. IEEE Com-puter Society (2017)  
 \[3\] Milan,  A.,  Leal-Taixe,  L.,  Reid,  I.D.,  Roth, S.,Schindler, K.: MOT16: A benchmark for multi-object tracking. CoRRabs/1603.00831(2016). URL http://arxiv.org/abs/1603.00831  
 \[4\] Dendorfer, P., Rezatofighi, H., Milan, A., Shi, J., Cremers, D., Reid, I., Roth, S., Schindler, K., Leal-Taixe, L.: Mot20: A benchmark for multi object tracking in crowded  scenes. arXiv:2003.09003[cs] (2020). URL http://arxiv.org/abs/1906.04567. ArXiv: 2003.09003  
+\[5\] Redmon, J., Farhadi, A.: YOLO9000:  better, faster, stronger. In: Proceedings of the 2017 IEEE Conference on Computer Vision and Pattern Recognition (CVPR), pp. 6517–6525 (2017)  
+\[6\] Sun, K., Xiao, B., Liu, D., Wang, J.: Deep high-resolution representation learning for human pose estimation. In: Proceedings of the IEEE Conference on Computer Vision and Pattern Recognition (CVPR), pp. 5693–5703 (2019)
