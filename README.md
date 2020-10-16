@@ -121,9 +121,7 @@ where `lim_len` denotes the minimal lenght required from the result (i.e., both 
 
 ## Reference
 For referencing this work please use the following citation:
-> Tracking subjects and detecting relationships in crowded videos  
-*Petr ELIAS, Matus MACKO, Jan SEDMIDUBSKY, Pavel ZEZULA*  
-Under review process, full BIB info will be added later
+> Under review process, will be added later
 
 ## Bibliography
 \[1\] Bewley, A., Ge, Z., Ott, L., Ramos, F.T., Upcroft, B.: Simple online and realtime tracking. In: 2016 IEEE In-ternational Conference on Image Processing, ICIP 2016, Phoenix, AZ, USA, September  25-28, 2016, pp. 3464–3468. IEEE (2016)  
