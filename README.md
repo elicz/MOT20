@@ -70,7 +70,7 @@ Both methods are by default enhanced with unassociated detection caching for dur
 pairings = get_possible_pairings(tracks, frame_gap, match_basis, match_frames, min_length_to_match, match_score)  #track pairs that will be linked
 tracks = match_pairings(pairings, tracks)
 ```
-Re-identification reduces the fragmentation in same-subject tracks that are interrupted by an occludor (walls, passing-by subjeects). The proposed methods first quantifies the likelihood of connectibility between tracks (i.e., the `tracks` obtained from previous step serve as input of re-id) and than matches the these tracks by interpolating their missing detections. Following tracking parameters are used to customize the tracker.
+Re-identification reduces the fragmentation in same-subject tracks that are interrupted by an occluder (walls, passing-by subjeects). The proposed methods first quantifies the likelihood of connectibility between tracks (i.e., the `tracks` obtained from previous step serve as input of re-id) and than matches the these tracks by interpolating their missing detections. Following tracking parameters are used to customize the tracker.
 
 #### <a name="track_params"></a>Tracking parameters
 
