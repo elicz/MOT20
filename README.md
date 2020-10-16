@@ -1,5 +1,5 @@
 # Tracking subjects and detecting relationships in crowded videos 
-*Petr ELIAS. Matus MACKO, Jan SEDMIDUBSKY, Pavel ZEZULA*  
+*Petr ELIAS, Matus MACKO, Jan SEDMIDUBSKY, Pavel ZEZULA*  
 *MTAP-D-20-01870 (under review)*
 
 Multi-subject tracking in crowded videos is a challenging research direction with high applicability in robotic vision, public safety, crowd management, autonomous driving vehicles, or psychology. This work proposes a near-online real-time tracking approach based on bounding-box detection association in consecutive video frames. Our work is inspired in popular methods \[1,2\], however, a significant reduction in track fragmentation and identity switching is achieved by the proposed re-identification phase. We further demonstrate the tracker applicability in human relationships detection scenario without utilizing visual features.
@@ -112,7 +112,7 @@ Entitative relationships are detected in tracks obtained by the tracker. The inp
 ## Reference
 For referencing this work please use the following citation:
 
-## Bibliohraphy
+## Bibliography
 \[1\] Bewley, A., Ge, Z., Ott, L., Ramos, F.T., Upcroft, B.: Simple online and realtime tracking. In: 2016 IEEE In-ternational Conference on Image Processing, ICIP 2016, Phoenix, AZ, USA, September  25-28, 2016, pp. 3464–3468. IEEE (2016)  
 \[2\] Bochinski, E., Eiselein,  V., Sikora, T.: High-speed tracking-by-detection without using image information. In: 14th IEEE International Conference on Advanced Video and Signal Based Surveillance, AVSS 2017, Lecce, Italy, August 29 - September 1, 2017, pp. 1–6. IEEE Com-puter Society (2017)  
 \[3\] Milan,  A.,  Leal-Taixe,  L.,  Reid,  I.D.,  Roth, S.,Schindler, K.: MOT16: A benchmark for multi-object tracking. CoRRabs/1603.00831(2016). URL http://arxiv.org/abs/1603.00831  
