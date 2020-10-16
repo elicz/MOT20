@@ -34,14 +34,16 @@ MATCH_FRAMES = 2		    # Exact number of frames to be projected for matching frag
 MATCH_BASIS = 30		    # If fragmented track has more frames than MIN_LENGTH_TO_MATCH, maximum number of frames to take into account when projecting (minimum of (length,match_basis is taken), default=30
 MATCH_MAX_FRAME_GAP = 50	# Max allowed gap between to-be-matched fragmented tracklets, default=50 
 REQUIRED_MATCH_SCORE = 0.3	# Min IOU score to match two fragmented tracks based on MATCH_FRAMES X MATCH_FRAMES sum of IOU, default=0.25 
+CACHE = 7			        # Number of frames to keep residual detections in memory for matching
+
 
 # OPTIMUM FOR TEST SEQUENCES
 # LOCAL PARAMETERS DERIVED FROM TRAINING DATA
-#TRAIN_IOU_TRACKING = [0.3, 0, 0.3, 0.2, 0.2, 0.2, 0.2]
-#TRAIN_SIZE_LIMIT = [7, 5, 3, 7, 3, 7,7]
-#TRAIN_MATCH_MAX_FRAME = [50, 100, 50, 100, 50, 25, 25]
-#TRAIN_MATCH_IOU = [0.1, 0.1, 0.4, 0.1, 0.3, 0.1, 0.1]
-#TRAIN_MATCH_FRAMES = [3, 2, 2, 2, 2, 2, 2]
+#TRAIN_IOU_TRACKING = [0.3, 0.5, 0.1, 0.5, 0.1, 0.001, 0.1]
+#TRAIN_SIZE_LIMIT = [3, 3, 3, 3, 7, 5, 7]
+#TRAIN_MATCH_MAX_FRAME = [50, 100, 100, 100, 25, 50, 50]
+#TRAIN_MATCH_IOU = [0.2, 0.2, 0.4, 0.1, 0.4, 0.1, 0.4]
+#TRAIN_CACHE_SIZE = [10, 10, 3, 5, 3, 10, 3]
 
 
 
@@ -213,94 +215,32 @@ def get_matching_score(t1, t2, match_basis, match_frames):
 
 #6. TRACKING
 #===========
-# Greedy variant (slightly faster, similar results)
-def track_greedy(H, iou_tracking, size_limit):
+def track_munkres(H, iou_tracking, size_limit, cache_threshold):
     result = {} # {id:[frame, i],[frame+1, i], ...}
-    tails = {} # {last_i:id}
+    tails = {} # {frame:{last_i:id}}
+    orphans = {} # {frame: detection}
     ID = 0
 
     max_F = get_max_frame_number(H)
     for f in range(1,max_F-1):
+        if((f-cache_threshold-1) in orphans):
+            del(orphans[f-cache_threshold-1])
+
         if(not(f in H)):
             H[f] = []
         if(not(f+1 in H)):
             H[f+1] = []
         detections1 = H[f]
         detections2 = H[f+1]
-
-        costs = {}
-        #costs = []
-        for i in range(0, len(detections1)):
-            for j in range(0, len(detections2)):
-                iou = bb_IoU(
-                    [detections1[i][0], detections1[i][1], detections1[i][0] + detections1[i][2], detections1[i][1] + detections1[i][3]],
-                    [detections2[j][0], detections2[j][1], detections2[j][0] + detections2[j][2], detections2[j][1] + detections2[j][3]]
-                )
-
-                if(iou > iou_tracking):
-                    costs[str(i)+"_"+str(j)] = iou
-                    #heapq.heappush(costs, (-iou, str(i)+"_"+str(j)))
-
-        # GREEDY matching on costs matrix:
-        forbidden_i = []   
-        forbidden_j = []
-        tails_updated = {}
-        for key, score in sorted(costs.items(), key=lambda item: item[1], reverse=True):
-        #for i in range(len(costs)):
-            #val, key = heapq.heappop(costs)
-            key_int = key.split("_")
-            i = int(key_int[0])
-            j = int(key_int[1])
-            if ((i in forbidden_i) or (j in forbidden_j)):
-                continue
-
-
-            # case I: j links with existing track (i exist in tails)
-            if(i in tails):
-                id = tails[i]
-                result[id].append([f+1,j])
-            # case II: i,j is a new pair (i does not exist in tails)
-            else:
-                id = ID
-                ID += 1
-                result[id] = [[f,i],[f+1,j]]
-
-            tails_updated[j] = id
-            forbidden_i.append(i)
-            forbidden_j.append(j)
-
-
-
-        tails = tails_updated
-
-    tracks = {}
-    for key in result:
-        if(len(result[key])<size_limit):
-            continue
-        else:
-            track = []
-            for t in result[key]:
-                temp = [t[0]]
-                temp.extend(H[t[0]][t[1]])
-                track.append(temp)
-            tracks[key] = track 	#[[frame, b1, ..., b4], ... []]
-
-    return tracks
-
-
-def track_munkres(H, iou_tracking, size_limit):
-    result = {} # {id:[frame, i],[frame+1, i], ...}
-    tails = {} # {last_i:id}
-    ID = 0
-
-    max_F = get_max_frame_number(H)
-    for f in range(1,max_F-1):
-        if(not(f in H)):
-            H[f] = []
-        if(not(f+1 in H)):
-            H[f+1] = []
-        detections1 = H[f]
-        detections2 = H[f+1]
+        map_i_to_frame = []
+        original_len = len(detections1)
+        for i in range(0,original_len):
+            map_i_to_frame.append(f)
+        for frame in range(f-cache_threshold, f):
+            if(frame in orphans):
+                detections1.extend(orphans[frame])
+                for i in range(0, len(orphans[frame])):
+                    map_i_to_frame.append(frame)
 
         costs = np.empty([len(detections1), len(detections2)], dtype=float)
         for i in range(0, len(detections1)):
@@ -311,7 +251,7 @@ def track_munkres(H, iou_tracking, size_limit):
                 costs[i][j] = -iou
 
         # MUNKRES
-        tails_updated = {}
+        matched_i = []
         rids, cids = solve_dense(costs)
         total = 0
         for i,j in zip(rids, cids):
@@ -319,34 +259,97 @@ def track_munkres(H, iou_tracking, size_limit):
             if(score < iou_tracking):
                 continue
 
+            frame_i = map_i_to_frame[i]
+            if(frame_i < f):
+                list = orphans[frame_i]
+                for o in list:
+                    if([o[0],o[1],o[2],o[3]] == [detections1[i][0],detections1[i][1],detections1[i][2],detections1[i][3]]):
+                        i = o[4]
+                        list.remove(o)
+                        break
+                orphans[frame_i] = list
+
+            if(frame_i==f):
+                matched_i.append(i)
+            
             # case I: j links with existing track (i exist in tails)
-            if(i in tails):
-                id = tails[i]
-                result[id].append([f+1,j])
+            if(frame_i in tails):
+                if(i in tails[frame_i]):
+                    id = tails[frame_i][i]
+                    result[id].append([f+1,j])
+                    del(tails[frame_i][i])
+                    if(not (f+1) in tails):
+                        tails[f+1] = {}
+                    tails[f+1][j] = id
+                    continue
+
+
             # case II: i,j is a new pair (i does not exist in tails)
-            else:
-                id = ID
-                ID += 1
-                result[id] = [[f,i],[f+1,j]]
+            id = ID
+            ID += 1
+            result[id] = [[frame_i,i],[f+1,j]]
+            if(not (f+1) in tails):
+                tails[f+1] = {}
+            tails[f+1][j] = id
 
-            tails_updated[j] = id
 
 
+        for i in range(0, original_len):
+            if(not(i in matched_i)):
+                if(f in orphans):
+                    list = orphans[f]
+                else:
+                    list = []
+                d = detections1[i]
+                d.append(i)
+                list.append(d)
+                orphans[f] = list
 
-        tails = tails_updated
 
     tracks = {}
     for key in result:
         if(len(result[key])<size_limit):
             continue
-        else:
-            track = []
-            for t in result[key]:
-                temp = [t[0]]
-                temp.extend(H[t[0]][t[1]])
-                track.append(temp)
-            tracks[key] = track 	#[[frame, b1, ..., b4], ... []]
 
+        track = []
+        fragment = []
+        fragments = []
+        frame_init = result[key][0][0]-1
+        for t in result[key]:
+            frame = t[0]
+            if (not (frame == frame_init+1)):
+                fragments.append(fragment)
+                fragment = []
+            temp = [frame]
+            temp.extend(H[frame][t[1]])
+            fragment.append(temp)
+                    
+            frame_init = frame
+        fragments.append(fragment)
+            
+        if(len(fragments)==0):
+            continue
+
+        track = fragments[0]
+        for i in range(1,len(fragments)):
+            t1_start, t1_end = get_start_end_frame(track)
+            t2_start, t2_end = get_start_end_frame(fragments[i])
+            frame_gap = t2_start - t1_end
+            last_frame = track[-1]
+            first_frame = fragments[i][0]
+            avg_width = (last_frame[3] + first_frame[3])/2
+            avg_height = (last_frame[4] + first_frame[4])/2
+            x_offset = (first_frame[1] - last_frame[1]) / frame_gap
+            y_offset = (first_frame[2] - last_frame[2]) / frame_gap
+            for frame in range (1, frame_gap):
+                track.append([t1_end + frame, last_frame[1] + frame * x_offset, last_frame[2] + frame * y_offset, avg_width, avg_height]) 
+            track.extend(fragments[i])
+
+ 
+        tracks[key] = track 	#[[frame, b1, ..., b4], ... []]
+
+
+    #print(tracks)
     return tracks
 
 
@@ -563,7 +566,7 @@ def stats(tracklets):
     
 
 
-def run_tracker(iou_tracking, size_limit, frame_gap, match_score, match_frames, match_basis, min_length_to_match):
+def run_tracker(iou_tracking, size_limit, frame_gap, match_score, match_frames, match_basis, min_length_to_match,cache):
     if not os.path.exists(TRACK_OUTPUT_DIR):
         os.makedirs(TRACK_OUTPUT_DIR)
 
@@ -574,12 +577,12 @@ def run_tracker(iou_tracking, size_limit, frame_gap, match_score, match_frames, 
         #frame_gap = TRAIN_MATCH_MAX_FRAME[counter]
         #match_score  = TRAIN_MATCH_IOU[counter]
         #match_frames = TRAIN_MATCH_FRAMES[counter]
-
+        #cache = TRAIN_CACHE_SIZE[counter]
 
         print(sequence, end = "\r")
         H_FILE = DET_DIR + sequence +".txt"
         H = get_hypotheses(H_FILE)
-        tracklets = track_munkres(H, iou_tracking, size_limit)
+        tracklets = track_munkres(H, iou_tracking, size_limit, cache)
         pairings = get_possible_pairings(tracklets, frame_gap, match_basis, match_frames, min_length_to_match,match_score)
         tracklets = match_pairings(pairings, tracklets)
 
