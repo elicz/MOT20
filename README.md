@@ -7,7 +7,7 @@ Multi-subject tracking in crowded videos is a challenging research direction wit
 ## Pipeline
 ![Flowchart](/supplementary/flowchart.png "Tracking ad detection flowchart")
 **1. Video containing subjects**  
-We used the videos from [https://motchallenge.net/data/MOT17](MOT17)\[3\] and [https://motchallenge.net/data/MOT20](MOT20)\[4\] datasets, but any video(s) containing people (even crowded video) would be good.  
+We used the videos from [MOT17](https://motchallenge.net/data/MOT17)\[3\] and [MOT20](https://motchallenge.net/data/MOT20)\[4\] datasets, but any video(s) containing people (even crowded video) would be good.  
   
 **2. Object detection** *(in each image)*  
 For MOT17/MOT20 the detection are already provided. Own detection methods can be used (e.g., YOLO\[5\]).  
@@ -42,4 +42,4 @@ For referencing this work please use the following citation:
 \[1\] Bewley, A., Ge, Z., Ott, L., Ramos, F.T., Upcroft, B.: Simple online and realtime tracking. In: 2016 IEEE In-ternational Conference on Image Processing, ICIP 2016, Phoenix, AZ, USA, September  25-28, 2016, pp. 3464–3468. IEEE (2016)  
 \[2\] Bochinski, E., Eiselein,  V., Sikora, T.: High-speed tracking-by-detection without using image information. In: 14th IEEE International Conference on Advanced Video and Signal Based Surveillance, AVSS 2017, Lecce, Italy, August 29 - September 1, 2017, pp. 1–6. IEEE Com-puter Society (2017)  
 \[3\] Milan,  A.,  Leal-Taixe,  L.,  Reid,  I.D.,  Roth, S.,Schindler, K.: MOT16: A benchmark for multi-object tracking. CoRRabs/1603.00831(2016). URL http://arxiv.org/abs/1603.00831  
-\[4\] Dendorfer, P., Rezatofighi, H., Milan, A., Shi, J., Cremers, D., Reid, I., Roth, S., Schindler, K., Leal-Taixe, L.: Mot20: A benchmark for multi object tracking in crowded  scenes. arXiv:2003.09003[cs] (2020). URL http://arxiv.org/abs/1906.04567. ArXiv: 2003.09003
+\[4\] Dendorfer, P., Rezatofighi, H., Milan, A., Shi, J., Cremers, D., Reid, I., Roth, S., Schindler, K., Leal-Taixe, L.: Mot20: A benchmark for multi object tracking in crowded  scenes. arXiv:2003.09003[cs] (2020). URL http://arxiv.org/abs/1906.04567. ArXiv: 2003.09003  
