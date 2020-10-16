@@ -22,15 +22,28 @@ We used hrnet for pose estimation on the detected areas obtained in Step 1. Othe
 Computation of hand distance and body proportion features is used to detect pairs holding hands and children in the video. [See details below](#rel_det).
 
 ## <a name="tracking"></a>Tracking
-Tracking methods are implemented in 
+> Tracking methods are implemented in *multi-object-tracker.py*
+
 ### Dependencies
+Following Python libraries are used:
+    numpy
+    lapsolver
+    heapq
+
 ### Input format
+The `get_hypotheses(file_with_detections)` should have the following format (i.e., each detection \[frame_nr,x,y,w,h\] on seperate line:
+    d1_bbox_frame_number,d1_bbox_top_left_corner_x,d1_bbox_top_left_corner_y,d1_bbox_width,d1_bbox_height
+    d2_bbox_frame_number,d2_bbox_top_left_corner_x,d2_bbox_top_left_corner_y,d2_bbox_width,d2_bbox_height
+    ...
+*Detections text files in MOT17 use sightly different format (there is additional attribute thath needs to be skipped). Method `get_hypotheses(` need to be adjusted accordingly. *
 ### Running the tracker
 ### Results
 
 ## <a name="rel_det"></a> Entitative Relationship Detection
-Detection and group discvoery methods can be found in
+> Tracking methods are implemented in *group_detecion_and_search.py*
+
 ### Dependencies
+
 ### Input format
 ### Running the detection
 ### Results
