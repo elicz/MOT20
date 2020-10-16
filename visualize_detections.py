@@ -100,7 +100,7 @@ def analyzeGT(detection_file, seqID):
 # @ track file - file with tracks in format
 # @ seqID - denotes sequences id (same with directory name where images are stored)
 ##
-def visualize_bbox(detection_file, seqID):
+def visualize_bbox(track_file, seqID):
     counter = 0
     dict = {}
     write_dir = VISUALIZATION_DIR+seqID
@@ -113,7 +113,7 @@ def visualize_bbox(detection_file, seqID):
         os.mkdir(write_dir, 0o755);
 
 
-    with open(detection_file, "r") as file:
+    with open(track_file, "r") as file:
         for line in file:
             attr = line.split(",")
             frame = int(attr[0])
