@@ -80,12 +80,13 @@ SIZE_LIMIT = 3            # Minimum number of frames required to constitute a tr
 INTERPOLATE = True        # Interpolate poses in re-identified tracks, default=True
 MIN_LENGTH_TO_MATCH = 3   # Minimum length of track required for matching fragmented tracks, default=3
 MATCH_FRAMES = 2          # Exact number of frames to be projected for matching fragmented tracks, default=2 (event. 3) 
-MATCH_BASIS = 30          #If fragmented track has more frames than MIN_LENGTH_TO_MATCH, maximum number of frames to take into account when projecting (minimum of (length,match_basis is taken), default=30
+MATCH_BASIS = 30          # If fragmented track has more frames than MIN_LENGTH_TO_MATCH, maximum number of frames to take into account when projecting (minimum of (length,match_basis is taken), default=30
 MATCH_MAX_FRAME_GAP = 50  # Max allowed gap between to-be-matched fragmented tracklets, default=50 
 REQUIRED_MATCH_SCORE = 0.3# Min IOU score to match two fragmented tracks based on MATCH_FRAMES X MATCH_FRAMES sum of IOU, default=0.25 
 ```
 
 ### Results
+The visualized tracking output can be seen at <https://motchallenge.net/method/MOT=3190&chl=10> (MOT17, see SDP detections) and <https://motchallenge.net/method/MOT=3190&chl=13> (MOT20). Alternatively, the `visualize_bbox(track_file, seqID)` in `visualize_detections.py` can be used to visualize each track in unique color.
 
 ## <a name="rel_det"></a> Entitative Relationship Detection
 > Tracking methods are implemented in *group_detecion_and_search.py*
@@ -99,6 +100,12 @@ Following Python libraries are used:
 ```
 
 ### Input format
+Entitative relationships are detected in tracks obtained by the tracker. The input data have the following format (i.e., one tracked bounding box per line):
+```
+    frame_number,subject_id,bbox_top_left_corner_x,bbox_top_left_corner_y,bbox_width,bbox_height
+    ...
+```
+
 ### Running the detection
 ### Results
 
