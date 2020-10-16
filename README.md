@@ -39,7 +39,7 @@ The `get_hypotheses(file_with_detections)` should have the following format, i.e
     d2_bbox_frame_number,d2_bbox_top_left_corner_x,d2_bbox_top_left_corner_y,d2_bbox_width,d2_bbox_height
     ...
 ```
-*Detections text files in MOT17 use sightly different format (there is additional attribute thath needs to be skipped). Method `get_hypotheses(` need to be adjusted accordingly. *
+*Detections text files in MOT17 use sightly different format (there is additional attribute thath needs to be skipped). Method `get_hypotheses(` need to be adjusted accordingly.*
 
 ### Running the tracker
 To run the tracker use:
@@ -56,14 +56,14 @@ Also, you can adjust the tracking parameters:
 ```
 # 3. TRACKING PARAMETERS
 #========================
-IOU_TRACKING = 0.2 		    # IOU tracking limit to match two detections, default=0.25
-SIZE_LIMIT = 3 			    # Minimum number of frames required to constitute a track, default=5
-INTERPOLATE = True		    # Interpolate poses in re-identified tracks, default=True
-MIN_LENGTH_TO_MATCH = 3	    # Minimum length of track required for matching fragmented tracks, default=3
-MATCH_FRAMES = 2		    # Exact number of frames to be projected for matching fragmented tracks, default=2 (event. 3) 
-MATCH_BASIS = 30		    # If fragmented track has more frames than MIN_LENGTH_TO_MATCH, maximum number of frames to take into account when projecting (minimum of (length,match_basis is taken), default=30
+IOU_TRACKING = 0.2        # IOU tracking limit to match two detections, default=0.25
+SIZE_LIMIT = 3            # Minimum number of frames required to constitute a track, default=5
+INTERPOLATE = True        # Interpolate poses in re-identified tracks, default=True
+MIN_LENGTH_TO_MATCH = 3   # Minimum length of track required for matching fragmented tracks, default=3
+MATCH_FRAMES = 2          # Exact number of frames to be projected for matching fragmented tracks, default=2 (event. 3) 
+MATCH_BASIS = 30		      # If fragmented track has more frames than MIN_LENGTH_TO_MATCH, maximum number of frames to take into account when projecting (minimum of (length,match_basis is taken), default=30
 MATCH_MAX_FRAME_GAP = 50	# Max allowed gap between to-be-matched fragmented tracklets, default=50 
-REQUIRED_MATCH_SCORE = 0.3	# Min IOU score to match two fragmented tracks based on MATCH_FRAMES X MATCH_FRAMES sum of IOU, default=0.25 
+REQUIRED_MATCH_SCORE = 0.3# Min IOU score to match two fragmented tracks based on MATCH_FRAMES X MATCH_FRAMES sum of IOU, default=0.25 
 ```
 
 ### Results
