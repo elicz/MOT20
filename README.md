@@ -114,16 +114,16 @@ tracks, by_ID = load_data("track_file.txt")
 2. Run the detector
 ```
     result = search_child(tracks, by_ID, lim_len, k) # detect children
-    result = search_hands(tracks, by_ID, lim_len, k)  # detect couples
+    result = search_hands(tracks, by_ID, lim_len, k) # detect couples
 ```
 where `lim_len` denotes the minimal lenght required from the result (i.e., both tracks in the result need to have at least this length), and `k` number of results to be retrieved.
 
 
 ## Reference
 For referencing this work please use the following citation:
-> Tracking subjects and detecting relationships in crowded videos 
-*Petr ELIAS, Matus MACKO, Jan SEDMIDUBSKY, Pavel ZEZULA*
-BIB info will be added
+> Tracking subjects and detecting relationships in crowded videos  
+*Petr ELIAS, Matus MACKO, Jan SEDMIDUBSKY, Pavel ZEZULA*  
+Under review process, full BIB info will be added later
 
 ## Bibliography
 \[1\] Bewley, A., Ge, Z., Ott, L., Ramos, F.T., Upcroft, B.: Simple online and realtime tracking. In: 2016 IEEE In-ternational Conference on Image Processing, ICIP 2016, Phoenix, AZ, USA, September  25-28, 2016, pp. 3464–3468. IEEE (2016)  
