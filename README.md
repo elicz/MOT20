@@ -1,8 +1,8 @@
-# Tracking Subjects and Detecting Relationships in Crowded City Videos 
-Petr ELIAS. Matus MACKO, Jan SEDMIDUBSKY, Pavel ZEZULA
-MTAP-D-20-01870 (under review)
+# Tracking subjects and detecting relationships in crowded videos 
+*Petr ELIAS. Matus MACKO, Jan SEDMIDUBSKY, Pavel ZEZULA*  
+*MTAP-D-20-01870 (under review)*
 
-Multi-subject tracking in crowded videos is an established yet challenging research direction with high applicability in public safety, crowd management, urban planning, autonomous driving vehicles, robotic vision, and psychology. This work proposes a near-online real-time tracking approach based on bounding-box detection association in consecutive video frames. Our work is inspired in popular methods [][], however, we achieve dramatic reduction in track fragmentation and identity switching by the re-identification phase. We also demonstrate the tracker applicability in human relationships detection scenario -- based on the extracted joint position information we detect couples holding hands and children in crowded videos, without utilizing any visual features.
+Multi-subject tracking in crowded videos is a challenging research direction with high applicability in robotic vision, public safety, crowd management, autonomous driving vehicles, or psychology. This work proposes a near-online real-time tracking approach based on bounding-box detection association in consecutive video frames. Our work is inspired in popular methods [][], however, a significant reduction in track fragmentation and identity switching is achieved by the proposed re-identification phase. We further demonstrate the tracker applicability in human relationships detection scenario without utilizing visual features.
 
 ## Pipeline
 img
