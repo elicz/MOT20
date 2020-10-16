@@ -61,8 +61,8 @@ SIZE_LIMIT = 3            # Minimum number of frames required to constitute a tr
 INTERPOLATE = True        # Interpolate poses in re-identified tracks, default=True
 MIN_LENGTH_TO_MATCH = 3   # Minimum length of track required for matching fragmented tracks, default=3
 MATCH_FRAMES = 2          # Exact number of frames to be projected for matching fragmented tracks, default=2 (event. 3) 
-MATCH_BASIS = 30		      # If fragmented track has more frames than MIN_LENGTH_TO_MATCH, maximum number of frames to take into account when projecting (minimum of (length,match_basis is taken), default=30
-MATCH_MAX_FRAME_GAP = 50	# Max allowed gap between to-be-matched fragmented tracklets, default=50 
+MATCH_BASIS = 30    # If fragmented track has more frames than MIN_LENGTH_TO_MATCH, maximum number of frames to take into account when projecting (minimum of (length,match_basis is taken), default=30
+MATCH_MAX_FRAME_GAP = 50  # Max allowed gap between to-be-matched fragmented tracklets, default=50 
 REQUIRED_MATCH_SCORE = 0.3# Min IOU score to match two fragmented tracks based on MATCH_FRAMES X MATCH_FRAMES sum of IOU, default=0.25 
 ```
 
