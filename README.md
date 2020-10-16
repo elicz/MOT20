@@ -43,9 +43,20 @@ The `get_hypotheses("file_with_detections.txt")` takes detection file in the fol
 *Detections text files in MOT17 use sightly different format (there is additional attribute thath needs to be skipped). Method `get_hypotheses(` need to be adjusted accordingly.*
 
 ### Running the tracker
-To run the tracker on the detection file, use:
+```
+    H = get_hypotheses(file_with_detections)        ## load detections
+    tracks = track_munkres(H, iou_tracking, size_limit, cache)    ## optimal tracking variant (slightly slower)
+    pairings = get_possible_pairings(tracks, frame_gap, match_basis, match_frames, min_length_to_match, match_score)  ##track pairs that will be linked
+    tracks = match_pairings(pairings, tracks)     ## tracks liniking and detection interpolation
+```
+The steps of the code above is explained in the following steps.
+
+1. Read the detection file:
 ```
     H = get_hypotheses(file_with_detections)  ## load detections
+``` 
+2. Run the Munkres-based or greedy tracker:
+```    
     tracks = track_munkres(H, iou_tracking, size_limit, cache)  ## optimal tracking variant (slightly slower)
 ```
 or
@@ -54,20 +65,22 @@ or
 ```
 Both methods are by default enhanced with unassociated detection caching for duration of `cache=7` frames. Set `cache=0` for NO caching, or adjust accordingly. All [tracking parameters](track_params) are specified below in more detail.
 
-#### Re-Identification
-todo
+3. Run the re-identification:
+```
+pairings = get_possible_pairings(tracks, frame_gap, match_basis, match_frames, min_length_to_match, match_score)  #track pairs that will be linked
+tracks = match_pairings(pairings, tracks)
+```
+Re-identification reduces the fragmentation in same-subject tracks that are interrupted by an occludor (walls, passing-by subjeects). The proposed methods first quantifies the likelihood of connectibility between tracks (i.e., the `tracks` obtained from previous step serve as input of re-id) and than matches the these tracks by interpolating their missing detections. Following tracking parameters are used to customize the tracker.
 
 #### <a name="track_params"></a>Tracking parameters
-Following tracking parameters are used to tune the tracker:
+
 ```
-# 3. TRACKING PARAMETERS
-#========================
 IOU_TRACKING = 0.2        # IOU tracking limit to match two detections, default=0.25
 SIZE_LIMIT = 3            # Minimum number of frames required to constitute a track, default=5
 INTERPOLATE = True        # Interpolate poses in re-identified tracks, default=True
 MIN_LENGTH_TO_MATCH = 3   # Minimum length of track required for matching fragmented tracks, default=3
 MATCH_FRAMES = 2          # Exact number of frames to be projected for matching fragmented tracks, default=2 (event. 3) 
-MATCH_BASIS = 30      #If fragmented track has more frames than MIN_LENGTH_TO_MATCH, maximum number of frames to take into account when projecting (minimum of (length,match_basis is taken), default=30
+MATCH_BASIS = 30        #If fragmented track has more frames than MIN_LENGTH_TO_MATCH, maximum number of frames to take into account when projecting (minimum of (length,match_basis is taken), default=30
 MATCH_MAX_FRAME_GAP = 50  # Max allowed gap between to-be-matched fragmented tracklets, default=50 
 REQUIRED_MATCH_SCORE = 0.3# Min IOU score to match two fragmented tracks based on MATCH_FRAMES X MATCH_FRAMES sum of IOU, default=0.25 
 ```
