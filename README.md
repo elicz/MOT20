@@ -22,7 +22,7 @@ We used hrnet for pose estimation on the detected areas obtained in Step 1. Othe
 Computation of hand distance and body proportion features is used to detect pairs holding hands and children in the video. [See details below](#rel_det).
 
 ## <a name="tracking"></a>Tracking
-> Tracking methods are implemented in *[multi-object-tracker.py]*
+> Tracking methods are implemented in *multi-object-tracker.py*
 
 ### Dependencies
 Following Python libraries are used:
@@ -42,12 +42,42 @@ The `get_hypotheses(file_with_detections)` should have the following format, i.e
 *Detections text files in MOT17 use sightly different format (there is additional attribute thath needs to be skipped). Method `get_hypotheses(` need to be adjusted accordingly. *
 
 ### Running the tracker
+To run the tracker use:
+```
+    H = get_hypotheses(file_with_detections)
+    tracks = track_munkres(H, iou_tracking, size_limit) ## Optimal variant (slower)
+```
+or
+```
+    tracks = track_greedy(H, iou_tracking, size_limit) ## Greedy variant (faster)
+```
+
+Also, you can adjust the tracking parameters:
+```
+# 3. TRACKING PARAMETERS
+#========================
+IOU_TRACKING = 0.2 		    # IOU tracking limit to match two detections, default=0.25
+SIZE_LIMIT = 3 			    # Minimum number of frames required to constitute a track, default=5
+INTERPOLATE = True		    # Interpolate poses in re-identified tracks, default=True
+MIN_LENGTH_TO_MATCH = 3	    # Minimum length of track required for matching fragmented tracks, default=3
+MATCH_FRAMES = 2		    # Exact number of frames to be projected for matching fragmented tracks, default=2 (event. 3) 
+MATCH_BASIS = 30		    # If fragmented track has more frames than MIN_LENGTH_TO_MATCH, maximum number of frames to take into account when projecting (minimum of (length,match_basis is taken), default=30
+MATCH_MAX_FRAME_GAP = 50	# Max allowed gap between to-be-matched fragmented tracklets, default=50 
+REQUIRED_MATCH_SCORE = 0.3	# Min IOU score to match two fragmented tracks based on MATCH_FRAMES X MATCH_FRAMES sum of IOU, default=0.25 
+```
+
 ### Results
 
 ## <a name="rel_det"></a> Entitative Relationship Detection
 > Tracking methods are implemented in *group_detecion_and_search.py*
 
 ### Dependencies
+Following Python libraries are used:
+```
+    numpy
+    cv2
+    statistics
+```
 
 ### Input format
 ### Running the detection
