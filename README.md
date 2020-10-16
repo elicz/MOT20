@@ -86,7 +86,7 @@ REQUIRED_MATCH_SCORE = 0.3# Min IOU score to match two fragmented tracks based o
 ```
 
 ### Results
-The visualized tracking output can be seen at <https://motchallenge.net/method/MOT=3190&chl=10> (MOT17, see SDP detections) and <https://motchallenge.net/method/MOT=3190&chl=13> (MOT20). Alternatively, the `visualize_bbox(track_file, seqID)` in `visualize_detections.py` can be used to visualize each track in unique color.
+The visualized tracking output can be seen at <https://motchallenge.net/method/MOT=3190&chl=10> (MOT17, see SDP detections) and <https://motchallenge.net/method/MOT=3190&chl=13> (MOT20). Alternatively, the `visualize_bbox` method in `visualize_detections.py` can be used to visualize each track in unique color.
 
 ## <a name="rel_det"></a> Entitative Relationship Detection
 > Tracking methods are implemented in *group_detecion_and_search.py*
